@@ -2,7 +2,6 @@ import React, {
   Component,
   PropTypes,
 } from 'react'
-import * as firebase from 'firebase'
 import Form from './components/Form'
 
 const { object } = PropTypes
@@ -14,6 +13,7 @@ const { object } = PropTypes
 class Login extends Component {
   static contextTypes = {
     router: object.isRequired,
+    store: object.isRequired,
   }
   /**
     * @type {object}
@@ -26,26 +26,20 @@ class Login extends Component {
     * handle submit form event
     * @param {SytheticEvent} e
     */
-  handleSubmit = (email, pw) => {
-    /**
-      * handle signIn to firebase
-      * @param {String} Email
-      * @param {String} Password
-      */
-    firebase.auth().signInWithEmailAndPassword(email, pw)
-    .then(result => {
+  handleSubmit = async(email, pw) => {
+    const { auth } = this.context.store
+    const res = await auth.login(email, pw)
+    if (res.success) {
       /**
         * redirect to Home screen after success
         */
       this.context.router.replace('/')
-    })
-    .catch(e => {
+    } else {
       /**
         * update error message
         */
-      const error = e.message
-      this.setState({ error })
-    })
+      this.setState({ error: res.error })
+    }
   }
 
   /**

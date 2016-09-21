@@ -2,7 +2,6 @@ import React, {
   Component,
   PropTypes,
 } from 'react'
-import * as firebase from 'firebase'
 import Form from './components/Form'
 
 const { object } = PropTypes
@@ -14,6 +13,7 @@ const { object } = PropTypes
 class Register extends Component {
   static contextTypes = {
     router: object.isRequired,
+    store: object.isRequired,
   }
   /**
     * @type {object}
@@ -27,26 +27,20 @@ class Register extends Component {
     * @param {String} Email
     * @param {String} Password
     */
-  handleSubmit = (email, pw) => {
-    /**
-      * handle createUser to firebase
-      * @param {String} Email
-      * @param {String} Password (at least 6 characters)
-      */
-    firebase.auth().createUserWithEmailAndPassword(email, pw)
-    .then(result => {
+  handleSubmit = async(email, pw) => {
+    const { auth } = this.context.store
+    const res = await auth.register(email, pw)
+    if (res.success) {
       /**
         * redirect to Home screen after success
         */
       this.context.router.replace('/')
-    })
-    .catch(e => {
+    } else {
       /**
         * update error message
         */
-      const error = e.message
-      this.setState({ error })
-    })
+      this.setState({ error: res.error })
+    }
   }
 
   /**

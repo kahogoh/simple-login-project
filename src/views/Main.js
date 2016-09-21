@@ -1,30 +1,48 @@
-import React, { Component } from 'react'
+import React, {
+  Component,
+  PropTypes,
+} from 'react'
 import {
   Link,
  } from 'react-router'
 import * as firebase from 'firebase'
+import { observer } from 'mobx-react'
+import Auth from '../stores/Auth'
 
+const { object } = PropTypes
 /**
   * Main view of navigation bar
   */
-
+@observer
 class Main extends Component {
-  /**
-    * @type {object}
-    * @property {boolean} loggedIn status
-    */
-  state = {
-    loggedIn: (firebase.auth().currentUser !== null),
+  static contextTypes = {
+    router: object.isRequired,
   }
 
+  static childContextTypes = {
+    store: object,
+  }
+
+  getChildContext = () => {
+    /**
+     * Register stores to be passed down to components
+     */
+    return {
+      store: {
+        auth: Auth,
+      },
+    }
+  }
+/*
   componentWillMount = () => {
     /**
       * update loggedIn state whenever Firebase AuthStateChanged
-      */
+      *
     firebase.auth().onAuthStateChanged(firebaseUser => {
       this.setState({
         loggedIn: (firebaseUser !== null),
       })
+      this.props.appState.updateCurrentUser(firebaseUser)
 
       if (firebaseUser) {
         console.log('Logged IN', firebaseUser)
@@ -33,6 +51,7 @@ class Main extends Component {
       }
     })
   }
+  */
 
   /**
     * render
@@ -41,7 +60,7 @@ class Main extends Component {
   render() {
     let loginOrOut
     let register
-    if (this.state.loggedIn) {
+    if (Auth.user) {
       loginOrOut = (
         <li>
           <Link to="/logout" className="navbar-brand">Logout</Link>
