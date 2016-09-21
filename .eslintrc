@@ -1,0 +1,11 @@
+{
+    "extends": ["airbnb"],
+    "parser": "babel-eslint",
+    "rules": {
+      "semi": [2, "never"],
+      "jsx-quotes": 0,
+      "react/wrap-multilines": 0,
+      "new-cap": 0,
+      "react/jsx-closing-bracket-location": 0
+    }
+}
