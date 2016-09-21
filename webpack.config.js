@@ -1,9 +1,9 @@
 var path = require('path')
 
 module.exports = {
-  entry: path.resolve(__dirname, '../src/index.js'),
+  entry: path.resolve(__dirname, './src/index.js'),
   output: {
-    path: path.resolve(__dirname, '../dist'),
+    path: __dirname,
     filename: 'bundle.js'
   },
 
@@ -12,7 +12,10 @@ module.exports = {
       {
         test: /src\/.+.js$/,
         exclude: /node_modules/,
-        loader: 'babel'
+        loader: 'babel-loader',
+        query: {
+          presets: ['es2015', 'react', 'stage-0']
+        }
       }
     ]
   }
